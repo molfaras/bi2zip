@@ -5,3 +5,4 @@ module Bi2zip
 end
 
 require_relative 'bi2zip/gray'
+require_relative 'bi2zip/rle'
