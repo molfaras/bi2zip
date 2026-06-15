@@ -3,8 +3,10 @@
 require_relative 'spec_helper'
 
 RSpec.describe Bi2zip::ZlbTuner do
+  # Walks ZLB_RANGE high to low so ties resolve to the largest ZLB, matching
+  # the early-termination tuner.
   def brute_force_best(raw)
-    candidates = described_class::ZLB_RANGE.map do |zlb|
+    candidates = described_class::ZLB_RANGE.to_a.reverse.map do |zlb|
       [zlb, Bi2zip::RLE.encode(raw, zero_len_bits: zlb)]
     end
     min_len = candidates.map { |_, enc| enc.length }.min
@@ -28,9 +30,9 @@ RSpec.describe Bi2zip::ZlbTuner do
     end
   end
 
-  it 'returns the minimum zlb and empty encoded for empty input' do
+  it 'returns the maximum zlb and empty encoded for empty input' do
     zlb, encoded = described_class.best('')
-    expect(zlb).to eq(described_class::ZLB_RANGE.min)
+    expect(zlb).to eq(described_class::ZLB_RANGE.max)
     expect(encoded).to eq('')
   end
 end
