@@ -6,3 +6,4 @@ end
 
 require_relative 'bi2zip/gray'
 require_relative 'bi2zip/rle'
+require_relative 'bi2zip/varint'
