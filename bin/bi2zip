@@ -1,0 +1,6 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require_relative '../lib/bi2zip/cli'
+
+exit Bi2zip::CLI.run(ARGV)
