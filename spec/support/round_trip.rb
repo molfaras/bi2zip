@@ -4,7 +4,7 @@ module Bi2zipSupport
   module RoundTrip
     module_function
 
-    def round_trip(bytes, parts: 12, algorithms: Bi2zip::Algorithms::ALL,
+    def round_trip(bytes, parts: :auto, algorithms: Bi2zip::Algorithms::ALL,
                    zlb: :auto, max_passes: :auto)
       result = Bi2zip::Compress.call(
         bytes: bytes, parts: parts, algorithms: algorithms,

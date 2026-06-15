@@ -33,8 +33,14 @@ module Bi2zip
       :parts, :original_byte_count, :passes, :bytes, :stats,
     )
 
-    def self.call(bytes:, parts: 12, algorithms: Algorithms::ALL,
+    def self.call(bytes:, parts: :auto, algorithms: Algorithms::ALL,
                   zlb: :auto, max_passes: :auto)
+      if parts == :auto
+        return PartsTuner.best(
+          bytes: bytes, algorithms: algorithms, zlb: zlb, max_passes: max_passes,
+        )
+      end
+
       new(
         bytes: bytes, parts: parts, algorithms: algorithms,
         zlb: zlb, max_passes: max_passes,

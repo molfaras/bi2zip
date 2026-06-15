@@ -131,11 +131,42 @@ RSpec.describe Bi2zip::Compress do
     end
   end
 
+  describe 'parts: :auto' do
+    it 'picks the parts value that minimises total output' do
+      bytes = Random.new(31).bytes(400).bytes
+      auto = described_class.call(bytes: bytes, parts: :auto)
+      brute = Bi2zip::Compress::PARTS_RANGE.map do |parts|
+        described_class.call(bytes: bytes, parts: parts)
+      end
+      brute_min = brute.map { |r| r.bytes.bytesize }.min
+      expect(auto.bytes.bytesize).to eq(brute_min)
+      expect(Bi2zip::Compress::PARTS_RANGE).to cover(auto.parts)
+    end
+
+    it 'round-trips with parts: :auto' do
+      bytes = Random.new(32).bytes(300).bytes
+      _, restored = Bi2zipSupport::RoundTrip.round_trip(bytes, parts: :auto)
+      expect(restored.bytes).to eq(bytes)
+    end
+
+    it 'is the default for parts' do
+      bytes = Random.new(33).bytes(200).bytes
+      default = described_class.call(bytes: bytes)
+      auto = described_class.call(bytes: bytes, parts: :auto)
+      expect(default.parts).to eq(auto.parts)
+      expect(default.bytes).to eq(auto.bytes)
+    end
+  end
+
   describe 'validation' do
     it 'rejects parts out of range (0, 3, 17)' do
       expect { described_class.call(bytes: [], parts: 0) }.to raise_error(ArgumentError, /parts/)
       expect { described_class.call(bytes: [], parts: 3) }.to raise_error(ArgumentError, /parts/)
       expect { described_class.call(bytes: [], parts: 17) }.to raise_error(ArgumentError, /parts/)
+    end
+
+    it 'accepts parts: :auto' do
+      expect { described_class.call(bytes: [], parts: :auto) }.not_to raise_error
     end
 
     it 'rejects zlb out of range (0, 3, 17)' do
