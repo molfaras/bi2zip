@@ -1,0 +1,6 @@
+.bundle/
+.claude/
+.DS_Store
+.rspec_status
+CLAUDE.md
+vendor/bundle/
